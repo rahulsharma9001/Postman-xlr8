@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "5729cc99-8418-43ab-b5a1-89d0c4981b0a",
+		"name": "Booking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40611673"
+	},
+	"item": [
+		{
+			"name": "Positive EndPoints",
+			"item": [
+				{
+					"name": "Get Booking Ids",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/booking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Using Advanced Assertions",
+									"",
+									"pm.test(\"Validate property types\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.firstname).to.be.a(\"string\");",
+									"    pm.expect(jsonData.lastname).to.be.a(\"string\");",
+									"    pm.expect(jsonData.totalprice).to.be.a(\"number\");",
+									"    pm.expect(jsonData.depositpaid).to.be.a(\"boolean\");",
+									"    pm.expect(jsonData.bookingdates).to.be.an(\"object\");",
+									"    pm.expect(jsonData.additionalneeds).to.be.a(\"string\");",
+									"});",
+									"pm.test(\"Validate date formats\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const dateRegex = /^\\d{4}-\\d{2}-\\d{2}$/;",
+									"    pm.expect(jsonData.bookingdates.checkin).to.match(dateRegex);",
+									"    pm.expect(jsonData.bookingdates.checkout).to.match(dateRegex);",
+									"});",
+									"pm.test(\"Check if checkout is after checkin\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const checkinDate = new Date(jsonData.bookingdates.checkin);",
+									"    const checkoutDate = new Date(jsonData.bookingdates.checkout);",
+									"    pm.expect(checkoutDate.getTime()).to.be.above(checkinDate.getTime());",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/booking/573",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								"573"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Booking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.iterationData.get(\"firstname\"); // Fetches 'firstname' from the data file",
+									"pm.iterationData.get(\"lastname\");  // Fetches 'lastname' from the data file",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"{{firstname}}\",\n    \"lastname\" : \"{{lastname}}\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token Generator",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response from the previous request",
+									"var response = pm.response.json(); // Ensure your response body is in JSON format",
+									"",
+									"// Extract the token (modify the key if needed)",
+									"var token = response.token; // Replace 'token' with the actual key for your token in the response",
+									"",
+									"// Save the token in the environment variable",
+									"pm.environment.set(\"authToken\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\": \"Rahul\",\n    \"lastname\": \"Kumar Sharma\",\n    \"totalprice\": 1141,\n    \"depositpaid\": true,\n    \"bookingdates\": {\n        \"checkin\": \"2018-01-01\",\n        \"checkout\": \"2019-01-01\"\n    },\n    \"additionalneeds\": \"super bowls\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/1386",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"1386"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"The Booking has been deleted successfully.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/1386",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"1386"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative EndPoints",
+			"item": []
+		}
+	]
+}
