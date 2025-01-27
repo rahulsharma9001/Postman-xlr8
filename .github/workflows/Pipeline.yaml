@@ -55,3 +55,17 @@ jobs:
         with:
            name : Reports
            Path : SampleArtifact
+
+      # Fetch Postman Monitor Results
+      - name: Fetch Postman Monitor Results
+        run: |
+          curl --location --request GET 'https://api.getpostman.com/monitors/${{secrets.POSTMAN_MONITOR_ID}}/results' \
+          --header 'X-Api-Key:${{secrets.POSTMAN_API_KEY}}'
+          --output monitor_results.json
+
+     # Upload Monitor Report as Artifact
+      - name: Upload Monitor Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: MonitorReport
+          path: monitor_results.json
