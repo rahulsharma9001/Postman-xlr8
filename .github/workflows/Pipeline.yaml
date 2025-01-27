@@ -45,7 +45,7 @@ jobs:
           # newman run "Booking.postman_collection_xlr8.json" -e "Booking env.postman_environment_xlr8.json" -r htmlextra --reporter-htmlextra-extract SampleArtifact/report.html
           newman run "Booking.postman_collection_xlr8.json" \
                       -e "Booking env.postman_environment_xlr8.json" \
-                      --iteration-data "testdata.csv" \
+                      --iteration-data "Booking.csv" \
                       --reporters cli,htmlextra \
                       --reporter-htmlextra-export SampleArtifact/htmlreports.html
 
