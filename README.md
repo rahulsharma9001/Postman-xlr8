@@ -61,7 +61,7 @@ This project demonstrates an end-to-end implementation of API testing using Post
    - **Collection**: `Booking Collection.postman_collection.json`
    - **Environment**: `Booking env.postman_environment_xlr8.json`
 3. Prepare the external data file for data-driven testing:
-   - **File**: `testdata.csv`
+   - **File**: `Booking.csv`
 4. Run the collection using Postman or Newman CLI:
    ```bash
-   newman run "Booking Collection.postman_collection.json" -e "Booking env.postman_environment_xlr8.json" -d "testdata.csv"
+   newman run "Booking Collection.postman_collection.json" -e "Booking env.postman_environment_xlr8.json" -d "Booking.csv"
