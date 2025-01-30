@@ -1,0 +1,447 @@
+{
+	"info": {
+		"_postman_id": "5729cc99-8418-43ab-b5a1-89d0c4981b0a",
+		"name": "Booking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40611673"
+	},
+	"item": [
+		{
+			"name": "Positive EndPoints",
+			"item": [
+				{
+					"name": "Get Booking Ids",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response body",
+									"const response = pm.response.json();",
+									"",
+									"// Extract the booking ID",
+									"const bookingId = response.bookingid;",
+									"",
+									"// Store the booking ID in a global variable",
+									"pm.globals.set(\"selectedBookingId\", JSON.stringify(bookingId));",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/booking/{{selectedBookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								"{{selectedBookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test to validate the data types of various properties in the response",
+									"pm.test(\"Validate property types\", function () {",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    // Check if 'firstname' is a string",
+									"    pm.expect(jsonData.firstname).to.be.a(\"string\");",
+									"",
+									"    // Check if 'lastname' is a string",
+									"    pm.expect(jsonData.lastname).to.be.a(\"string\");",
+									"",
+									"    // Check if 'totalprice' is a number",
+									"    pm.expect(jsonData.totalprice).to.be.a(\"number\");",
+									"",
+									"    // Check if 'depositpaid' is a boolean",
+									"    pm.expect(jsonData.depositpaid).to.be.a(\"boolean\");",
+									"        ",
+									"    // Check if 'bookingdates' is an object",
+									"    pm.expect(jsonData.bookingdates).to.be.an(\"object\");",
+									"        ",
+									"    // Check if 'additionalneeds' is a string",
+									"    pm.expect(jsonData.additionalneeds).to.be.a(\"string\");",
+									"});",
+									"",
+									"// Test to ensure that the check-in and check-out dates follow the correct format (YYYY-MM-DD)",
+									"pm.test(\"Validate date formats\", function () {",
+									"    const jsonData = pm.response.json();",
+									"",
+									"    // Define a regular expression to match the date format YYYY-MM-DD",
+									"    const dateRegex = /^\\d{4}-\\d{2}-\\d{2}$/;",
+									"",
+									"     // Validate that the 'checkin' date matches the expected format",
+									"    pm.expect(jsonData.bookingdates.checkin).to.match(dateRegex);",
+									"",
+									"    // Validate that the 'checkout' date matches the expected format",
+									"    pm.expect(jsonData.bookingdates.checkout).to.match(dateRegex);",
+									"});",
+									"",
+									"// Test to check if the checkout date is later than the check-in date",
+									"pm.test(\"Check if checkout is after checkin\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    ",
+									"    // Convert 'checkin' and 'checkout' dates to JavaScript Date objects",
+									"    const checkinDate = new Date(jsonData.bookingdates.checkin);",
+									"    const checkoutDate = new Date(jsonData.bookingdates.checkout);",
+									"",
+									"    // Ensure that the checkout date is after the check-in date",
+									"    pm.expect(checkoutDate.getTime()).to.be.above(checkinDate.getTime());",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/booking/{{selectedBookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								"{{selectedBookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Booking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// pm.iterationData.get(\"firstname\"); // Fetches 'firstname' from the data file",
+									"// pm.iterationData.get(\"lastname\");  // Fetches 'lastname' from the data file",
+									"",
+									"// List of random first names",
+									"const firstNames = [\"John\", \"Jane\", \"Michael\", \"Sarah\", \"David\", \"Emily\", \"Robert\", \"Olivia\", \"Chris\", \"Sophia\", \"Rahul\", \"Ayush\"];",
+									"",
+									"// List of random last names",
+									"const lastNames = [\"Smith\", \"Johnson\", \"Brown\", \"Williams\", \"Jones\", \"Garcia\", \"Miller\", \"Davis\", \"Martinez\", \"Taylor\", \"Sharma\", \"Mishra\"];",
+									"",
+									"// Generate random first name",
+									"const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];",
+									"",
+									"// Generate random last name",
+									"const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];",
+									"",
+									"// Set the random names in environment variables",
+									"pm.environment.set(\"randomFirstName\", randomFirstName);",
+									"pm.environment.set(\"randomLastName\", randomLastName);",
+									"",
+									"// Log the generated names",
+									"console.log(\"Generated First Name:\", randomFirstName);",
+									"console.log(\"Generated Last Name:\", randomLastName);",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"{{randomFirstName}}\",\n    \"lastname\" : \"{{randomLastName}}\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token Generator",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the response from the previous request",
+									"var response = pm.response.json(); // Ensure your response body is in JSON format",
+									"",
+									"// Extract the token (modify the key if needed)",
+									"var token = response.token; // Replace 'token' with the actual key for your token in the response",
+									"",
+									"// Save the token in the environment variable",
+									"pm.environment.set(\"authToken\", token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body matches string\", function () {",
+									"    pm.expect(pm.response.text()).to.be.that;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Booking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// List of random first names",
+									"const randomFirstNames = [\"John\", \"Jane Jon\", \"Michael Clark\", \"Sarah Michel\", \"David Warner\", \"Emily Kate\", \"Robert Wadra\", \"Olivia\", \"Chris Gayle\", \"Sophia steria\", \"Rahul boss\", \"Ayush bisht\"];",
+									"",
+									"// List of random last names",
+									"const randomLastNames = [\"Smith Williams\", \"Johnson\", \"Brownie\", \"Kane Williams\", \"Nick Jones\", \"Emily Garcia\", \"Killer Miller\", \"Dewald Davis\", \"Martinez\", \"Ross Taylor\", \"Kumar Sharma\", \"King Mishra\"];",
+									"",
+									"// Generate random first name and last name",
+									"const randomFirstName = randomFirstNames[Math.floor(Math.random() * randomFirstNames.length)];",
+									"const randomLastName = randomLastNames[Math.floor(Math.random() * randomLastNames.length)];",
+									"",
+									"// Set the random names in environment variables",
+									"pm.environment.set(\"updateRandomFirstName\", randomFirstName);",
+									"pm.environment.set(\"updateRandomLastName\", randomLastName);",
+									"",
+									"// Log the generated names",
+									"console.log(\"Generated First Name:\", randomFirstName);",
+									"console.log(\"Generated Last Name:\", randomLastName);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(\"Selected Booking ID:\", pm.environment.get(\"selectedBookingId\"));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\": \"{{updateRandomFirstName}}\",\n    \"lastname\": \"{{updateRandomLastName}}\",\n    \"totalprice\": 1141,\n    \"depositpaid\": true,\n    \"bookingdates\": {\n        \"checkin\": \"2018-01-01\",\n        \"checkout\": \"2019-01-01\"\n    },\n    \"additionalneeds\": \"super bowls\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking/{{selectedBookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								"{{selectedBookingId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Booking",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(\"Selected Booking ID:\", pm.environment.get(\"selectedBookingId\"));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{authToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": \"The Booking has been deleted successfully.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking/{{selectedBookingId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								"{{selectedBookingId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative EndPoints",
+			"item": []
+		}
+	]
+}
