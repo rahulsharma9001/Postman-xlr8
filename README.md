@@ -1,4 +1,4 @@
-# 🌟 Mastering Advanced API Testing with Postman: Automation, Dynamic Data, and Performance Testing
+# Mastering Advanced API Testing with Postman: Automation, Dynamic Data, and Performance Testing
 
 ## 📖 Overview
 This project demonstrates an end-to-end implementation of API testing using Postman. Key highlights include designing a mock API, employing advanced assertions, performing CRUD operations, integrating data-driven testing, and ensuring continuous testing with GitHub Actions and scheduling.
