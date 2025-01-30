@@ -195,15 +195,19 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"//Checking the Content-Type",
 									"pm.test(\"Content-Type is present\", function () {",
 									"    pm.response.to.have.header(\"Content-Type\");",
 									"});",
+									"//Checking the Status Code",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
+									"//Validatiing Successful POST request",
 									"pm.test(\"Successful POST request\", function () {",
 									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
 									"});",
+									"//Asserting that Resonse Time should less than 2000ms",
 									"pm.test(\"Response time is less than 2000ms\", function () {",
 									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 									"});",
@@ -245,16 +249,6 @@
 					"name": "Token Generator",
 					"event": [
 						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
 							"listen": "test",
 							"script": {
 								"exec": [
@@ -271,9 +265,21 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
+									"//Checking that body matches the String",
 									"pm.test(\"Body matches string\", function () {",
 									"    pm.expect(pm.response.text()).to.be.that;",
 									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
 									""
 								],
 								"type": "text/javascript",
@@ -329,6 +335,9 @@
 									"// Log the generated names",
 									"console.log(\"Generated First Name:\", randomFirstName);",
 									"console.log(\"Generated Last Name:\", randomLastName);",
+									"",
+									"",
+									"",
 									""
 								],
 								"type": "text/javascript",
@@ -340,7 +349,17 @@
 							"script": {
 								"exec": [
 									"console.log(\"Selected Booking ID:\", pm.environment.get(\"selectedBookingId\"));",
-									""
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"//Checking the Content-Type",
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"//Validating Successfull PUT request",
+									"pm.test(\"Successful PUT request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -396,6 +415,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"//Validating Response time should be less than 500ms",
 									"pm.test(\"Response time is less than 500ms\", function () {",
 									"    pm.expect(pm.response.responseTime).to.be.below(500);",
 									"});",
